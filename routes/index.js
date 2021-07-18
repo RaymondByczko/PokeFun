@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 /// REM1
 /// router.use(express.static("jspublic"));
+// router.use(express.static("stylesheets"));
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

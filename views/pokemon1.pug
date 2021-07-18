@@ -4,7 +4,7 @@ html
             name="viewport" content="width=device-width, initial-scale=1.0"
         )
         title= title
-        link(href='/style.css' rel='stylesheet'
+        link(href='/stylesheets/style.css' rel='stylesheet'
             type='text/css')
         //-script
         //-    include ../mongodbops.js
@@ -21,6 +21,8 @@ html
             H1(class='h1_class') #{message}
         DIV
             button(id='id_fetch_pokemon1') Fetch pokemon1
+            pre()
+                textarea(id="id_results")
             form(action='/limited' method='post' id='id_form_limitedadd')
                 label(
                     for='byGoodLoginAttempts'
@@ -77,7 +79,14 @@ html
                     alert("pokemon: before");
                     let response_pokemon1 = await modulep.pokemon1();
                     alert("Before response_pokemon1.json()");
-                    let pokemon1 = await response_pokemon1.json();
+                    let rpokemon1 = await response_pokemon1.json();
+                    alert("rpokemon1="+rpokemon1);
+                    // let bd = await response.json();
+                    // alert("JSON.stringify(rpokemon1)="+JSON.stringify(rpokemon1));
+                    // document.querySelector('#id_results').innerText = JSON.stringify(JSON.parse(rpokemon1), undefined, 2);
+                    // document.querySelector('#id_results').innerText = JSON.stringify(rpokemon1, undefined, 8);
+                    document.querySelector('#id_results').innerHTML = JSON.stringify(rpokemon1, undefined, 8);
+                    // document.querySelector('#id_results').innerText = rpokemon1;
                     alert("onInputClick:end");
                 }
                 document.querySelector('#id_fetch_pokemon1').addEventListener('click', onInputClick);

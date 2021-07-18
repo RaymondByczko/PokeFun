@@ -17,7 +17,7 @@ async function pokemon1() {
             }
         }
         let response = await fetch(url, opt);
-        await alertFetchResponse(response, "pokemon1");
+        // await alertFetchResponse(response, "pokemon1");
         return response;
     } catch (e) {
         alert("pokemon1 caught");
