@@ -1,0 +1,83 @@
+html
+    head
+        meta(
+            name="viewport" content="width=device-width, initial-scale=1.0"
+        )
+        title= title
+        link(href='/style.css' rel='stylesheet'
+            type='text/css')
+        //-script
+        //-    include ../mongodbops.js
+    body(class='flex-container')
+        DIV(class='dbstatus-parent')
+            DIV(class='dbstatus-success') Database Status
+            if dbStatus == 'pingfailed'
+                DIV(class='dbstatus-failed', id='dbstatus_id') #{dbStatus}
+            else
+                DIV(class='dbstatus-success' id='dbstatus_id') #{dbStatus}
+        DIV
+            BUTTON(class='dbcheck', type='button', onclick="fetch('/dbstatus').then(response => response.json()).then(data => {alert(JSON.stringify(data));document.querySelector('#dbstatus_id').innerHTML = data.pingstatus;})") Check
+        DIV
+            H1(class='h1_class') #{message}
+        DIV
+            button(id='id_fetch_pokemon1') Fetch pokemon1
+            form(action='/limited' method='post' id='id_form_limitedadd')
+                label(
+                    for='byGoodLoginAttempts'
+                    class='home-label'
+                ) 	Enter Good Login Attempts
+                input(
+                    type='text'
+                    name='byGoodLoginAttempts'
+                )
+                br()
+                br()
+                label(
+                    for='byTimeOfDay'
+                    class='home-label'
+                ) 	Enter Time Of Day
+                //-input(
+                //-	type='text'
+                //-	name='byTimeOfDay'
+                //-)
+                br()
+                br()
+                label(
+                    for='byTimeTotal'
+                    class='home-label'
+                ) Time Total
+                input(
+                    type="text"
+                    name="byTimeTotal"
+                )
+                br()
+                br()
+                label(
+                    for='byNumberFilesToUpload'
+                    class='home-label'
+                ) Number Files Upload
+                input(
+                    type="text"
+                    name="byNumberFilesToUpload"
+                )
+                br()
+                br()
+                input(
+                    type='submit'
+                    Value='Submit'
+                )
+            script(type="module").
+                //- import {pokemon1, alertFetchResponse} from "/fetchpokapi_ecmascriptmodule.js";
+                let modulep = await import('/fetchpokapi_ecmascriptmodule.js');
+                async function onInputClick(e) {
+                    //- import {pokemon1, alertFetchResponse} from "/fetchpokeapi_ecmascriptmodule.js";
+                    e.preventDefault();
+                    alert("onInputClick:start");
+                    e.stopPropagation();
+                    alert("pokemon: before");
+                    let response_pokemon1 = await modulep.pokemon1();
+                    alert("Before response_pokemon1.json()");
+                    let pokemon1 = await response_pokemon1.json();
+                    alert("onInputClick:end");
+                }
+                document.querySelector('#id_fetch_pokemon1').addEventListener('click', onInputClick);
