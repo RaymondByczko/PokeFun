@@ -12,6 +12,10 @@ router.get('/', function(req, res, next) {
 /* Trial pokeman page */
 router.get('/pokemon1', function(req, res){
   res.render('pokemon1', {});
+});
+
+router.get('/pokemon1details', function(req, res) {
+  res.render('pokemon1details', {});
 })
 
 module.exports = router;

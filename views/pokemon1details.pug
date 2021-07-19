@@ -21,46 +21,11 @@ html
             button(id='id_fetch_pokemon1') Fetch pokemon1
             pre()
                 textarea(id="id_results")
-            form(action='/limited' method='post' id='id_form_limitedadd')
-                label(
-                    for='byGoodLoginAttempts'
-                    class='home-label'
-                ) 	Enter Good Login Attempts
-                input(
-                    type='text'
-                    name='byGoodLoginAttempts'
-                )
-                br()
-                br()
-                label(
-                    for='byTimeOfDay'
-                    class='home-label'
-                ) 	Enter Time Of Day
-                //-input(
-                //-	type='text'
-                //-	name='byTimeOfDay'
-                //-)
-                br()
-                br()
-                label(
-                    for='byTimeTotal'
-                    class='home-label'
-                ) Time Total
-                input(
-                    type="text"
-                    name="byTimeTotal"
-                )
-                br()
-                br()
-                input(
-                    type='submit'
-                    Value='Submit'
-                )
+            pre()
+                textarea(id="id_poke_prop")
             script(type="module").
-                //- import {pokemon1, alertFetchResponse} from "/fetchpokapi_ecmascriptmodule.js";
                 let modulep = await import('/fetchpokapi_ecmascriptmodule.js');
                 async function onInputClick(e) {
-                    //- import {pokemon1, alertFetchResponse} from "/fetchpokeapi_ecmascriptmodule.js";
                     e.preventDefault();
                     alert("onInputClick:start");
                     e.stopPropagation();
@@ -72,6 +37,12 @@ html
                     // alert("JSON.stringify(rpokemon1)="+JSON.stringify(rpokemon1));
                     document.querySelector('#id_results').innerHTML = JSON.stringify(rpokemon1, undefined, 8);
                     /* innerText does not work; use innerHTML */
+                    let pPokemon1 = modulep.propertiesOf(rpokemon1);
+                    let reducer = function(acc, curVal, curInd, srcArr) {
+                        return acc + curVal + '&#13;&#10;';
+                    };
+                    let propHTML = pPokemon1.reduce(reducer,'');
+                    document.querySelector('#id_poke_prop').innerHTML = propHTML;
                     alert("onInputClick:end");
                 }
                 document.querySelector('#id_fetch_pokemon1').addEventListener('click', onInputClick);

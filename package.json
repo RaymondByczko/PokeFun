@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "prestart": "cat jsprivate/fetchpokapi_base.js jsprivate/fetchpokapi_ending_commonjs.js > jspublic/fetchpokapi_commonjs.js; cat jsprivate/fetchpokapi_base.js jsprivate/fetchpokapi_ending_ecmascriptmodule.js > jspublic/fetchpokapi_ecmascriptmodule.js",
-    "start": "node ./bin/www"
+    "start": "node ./PokeFun/bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
