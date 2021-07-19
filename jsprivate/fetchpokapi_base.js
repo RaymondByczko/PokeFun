@@ -6,6 +6,12 @@
  * in node, while ecmascript is used when the code
  * needs to be in the browser, in web pages.
  */
+
+/*
+ * Provides proof of concept of pokeapi to sample endpoint.
+ * Lets see whats returned.  Everything is hardcoded to
+ * keep it simple.
+ */
 async function pokemon1() {
     try {
         let url = 'https://pokeapi.co/api/v2/pokemon/1';
@@ -21,9 +27,16 @@ async function pokemon1() {
         return response;
     } catch (e) {
         alert("pokemon1 caught");
+        throw e;
     }
 }
 
+/*
+ * A more generalized version to check and use the pokemon api.
+ * The resource number n can be specified as an integer.
+ * The response of the fetch is returned.  Make sure to do
+ * something like response.json() to get the json body.
+ */
 async function pokemon(n) {
     try {
         if (typeof(n) != "number") {
@@ -49,6 +62,12 @@ async function pokemon(n) {
     }
 }
 
+/*
+ * Obtains the json body of the response fetched from the endpoint.
+ * @todo The url of the endpoint is embedded in pokemon(n).
+ * This can be further generalized and made available to the client
+ * code.
+ */
 async function pokemonJson(n) {
     let response = await pokemon(n);
     return response.json();
@@ -60,6 +79,12 @@ async function pokemonJson(n) {
  * Its like ignoring everything in whole except
  * certain properties specified by sliceProperties.
  * whole is typically produced by calling pokemonJson.
+ *
+ * Sample client code @todo See if this works!
+ * let myWhole = await pokemonJson(1);
+ * let mySliceProperties = ["stats", "name"];
+ * let mySlice = await pokemonSlice(mySliceProperties, myWhole);
+ *
  */
 async function pokemonSlice(sliceProperties, whole) {
     let sliceValue = {};

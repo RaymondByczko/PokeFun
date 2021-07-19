@@ -9,13 +9,16 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-/* Trial pokeman page */
+/* Trial pokemon page */
 router.get('/pokemon1', function(req, res){
   res.render('pokemon1', {});
 });
 
+/* Enhanced trial pokemon with details */
 router.get('/pokemon1details', function(req, res) {
   res.render('pokemon1details', {});
 })
+
+
 
 module.exports = router;
