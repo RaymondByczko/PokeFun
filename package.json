@@ -4,14 +4,16 @@
   "private": true,
   "scripts": {
     "prestart": "cat jsprivate/fetchpokapi_base.js jsprivate/fetchpokapi_ending_commonjs.js > jspublic/fetchpokapi_commonjs.js; cat jsprivate/fetchpokapi_base.js jsprivate/fetchpokapi_ending_ecmascriptmodule.js > jspublic/fetchpokapi_ecmascriptmodule.js",
-    "start": "node ./PokeFun/bin/www"
+    "start": "node ./bin/www"
   },
   "dependencies": {
+    "body-parser": "^1.19.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
+    "node-fetch": "^2.6.1",
     "pug": "2.0.0-beta11"
   }
 }

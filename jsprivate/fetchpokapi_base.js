@@ -8,6 +8,35 @@
  */
 
 /*
+ * setFetch and fetchFunction allow the particular
+ * fetch function to be assigned, and utilized, per
+ * the context in which this module is used.
+ *
+ * In node.js (server side), setFetch will be called.
+ * Its argument is something like that which is
+ * obtained with node-fetch.  Here is some server side
+ * code from index.js.
+ *
+ *      const nodefetch = require('node-fetch');
+ *      var fetchpokapi = require('../jspublic/fetchpokapi_commonjs');
+ *      fetchpokapi.setFetch(nodefetch);
+ *
+ * On the client side, the native fetch will be used.  This is
+ * arranged by *NOT CALLING setFetch*.  And so there is not require
+ * of 'node-fetch' either.
+ *
+ * So are the accomodations that are made between the server and client sides.
+ * @todo setFetch is exported in both the commonjs and ecmascript worlds.
+ * It should not be exported in the ecmascript world if it will not
+ * be called there.
+ */
+var fetchFunction;
+
+function setFetch(preferredFetch) {
+    fetchFunction = preferredFetch;
+}
+
+/*
  * Provides proof of concept of pokeapi to sample endpoint.
  * Lets see whats returned.  Everything is hardcoded to
  * keep it simple.
@@ -26,7 +55,8 @@ async function pokemon1() {
         // await alertFetchResponse(response, "pokemon1");
         return response;
     } catch (e) {
-        alert("pokemon1 caught");
+        // alert("pokemon1 caught");
+        console.log('pokemon1 caught');
         throw e;
     }
 }
@@ -45,7 +75,7 @@ async function pokemon(n) {
         if (!Number.isInteger(n)) {
             throw new Error("fetchpokapi_base:need an integer");
         }
-        let url = 'https://pokeapi.co/api/v2/pokemon/' + Object.toString(n);
+        let url = 'https://pokeapi.co/api/v2/pokemon/' + n.toString();
         let data = {};
         let opt = {
             method: 'GET',
@@ -53,11 +83,15 @@ async function pokemon(n) {
                 'Accept':'application/json'
             }
         }
-        let response = await fetch(url, opt);
+        if (fetchFunction == undefined) {
+            fetchFunction = fetch;
+        }
+        let response = await fetchFunction(url, opt);
         // await alertFetchResponse(response, "pokemon1");
         return response;
     } catch (e) {
-        alert("fetchpokapi_base:pokemon caught");
+        console.log("fetchpokapi_base:pokemon caught");
+        console.log("... message = " + e.message);
         throw e;
     }
 }
@@ -69,8 +103,15 @@ async function pokemon(n) {
  * code.
  */
 async function pokemonJson(n) {
+    /* let response = await pokemon(n); */
     let response = await pokemon(n);
-    return response.json();
+    if (response.ok) {
+        let j = await response.json();
+        return j;
+    }
+    else {
+        throw new Error("pokemonJson:response is not ok");
+    }
 }
 
 /*
@@ -87,12 +128,43 @@ async function pokemonJson(n) {
  *
  */
 async function pokemonSlice(sliceProperties, whole) {
+    console.log('pokemonSlice:start');
     let sliceValue = {};
 
     sliceProperties.forEach(function(val, ind, array){
+        console.log("...val="+val);
         sliceValue[val] = whole[val];
     });
     return sliceValue;
+}
+/*
+ * Transforms a slice given to it.  The slice is assumed
+ * to have two properties ('name' and 'stats').
+ */
+function pokemonTransformedSlice(slice) {
+    if ((slice?.name === undefined) || (slice?.name === null) )
+    {
+        throw new Error("problem (name property) with slice");
+    }
+    if ((slice?.stats === undefined) || (slice?.stats === null) )
+    {
+        throw new Error("problem (stats property) with slice");
+    }
+
+    let transformedSlice = {};
+    transformedSlice['name'] = slice['name'];
+    transformedSlice['stats'] = [];
+    slice.stats.forEach(function(val, ind, array){
+        let name = val['stat']['name'];
+        let stat = val['base_stat'];
+        let statObject =
+            {
+                'name':name,
+                'stat':stat
+            };
+        transformedSlice['stats'].push(statObject);
+    });
+    return transformedSlice;
 }
 
 async function alertFetchResponse(responseOriginal, firstAlert="",numberHeaders=5) {

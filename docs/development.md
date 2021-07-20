@@ -5,7 +5,13 @@
 This document will discuss various requirements in the coding
 challenge.  That file is 'Coding Challenge_Parallel.docx'.
 
-### Endpoints
+### Given Endpoints
+
+Given endpoints are the ones utilized by this software
+service.  They are not developed by this agent.  Those
+that are provided by this agent are 'Developed Endpoints'.
+At times, a developed endpoint can utilize given endpoints
+to provide its own resource.
 
 The endpoints are five in total, but can be generalized.
 They are of the form: https://pokeapi.co/api/v2/pokemon/1
@@ -34,6 +40,23 @@ these two components.
 2. pokemon1details - proof of concept with some details.
 
 3. pokemon(n) - more generalized than above.
+
+### Developed Endpoints
+
+This expressjs application provides certain endpoints
+which are outlined here.
+
+- pokemon/full/:pokemondId - provides the full json object for
+the pokemon with resource id of :pokemonId
+  
+- pokemon/slice/:pokemondId - provides a slice, or portion, of the full json
+pokemon object.  One or more high level keys are maintained, and the
+  rest are discarded in the slicing.
+  
+- pokemon/transform/:pokemonId - after a slice is taken, data within
+is rearranged to meet a certain transform requirement.
+  
+@TODO replace pokemon with pokefun
 
 ### Storage of Pokemon Data Structure
 
@@ -81,6 +104,31 @@ and sprites
 
 - note that the keys of interest, name and stats, are very limited
 
+## Appendix 2 - Javascript modules
 
+Javascript functions written for this coding challenge
+can be shared between the server and the browser
+client, with some caveats.
 
+The main issue is that commonjs modules are used on the
+server, by node.js .  These are not usable in their
+commonjs form (so to say), from within the browser.
+The browser requires ecmascript modules.  What is one
+to do?
+
+The difference between the two worlds is how functions
+etc are exported.  The mechanism for exporting is at the
+end of the file.  This leads to a solution.
+
+Two different 'ending' files are maintained.  One
+for commonjs and one for ecmascript.  An ending file
+is appended to a 'base' file, to produce a resultant
+file useful in that world.
+
+The base and ending files are located in jsprivate.
+They are concatenated in a npm script and stored
+in jspublic.  So far, a make file type dependency
+based on timestamp is ignored.  The proper module
+files are produced every time.  But at least its
+a start, and allows less version control effort.
 
