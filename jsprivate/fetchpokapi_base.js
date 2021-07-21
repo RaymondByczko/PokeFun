@@ -142,11 +142,14 @@ async function pokemonSlice(sliceProperties, whole) {
  * to have two properties ('name' and 'stats').
  */
 function pokemonTransformedSlice(slice) {
-    if ((slice?.name === undefined) || (slice?.name === null) )
+    if ((slice === undefined) || (slice === null)) {
+        throw new Error("problem with slice");
+    }
+    if ((slice.name === undefined) || (slice.name === null) )
     {
         throw new Error("problem (name property) with slice");
     }
-    if ((slice?.stats === undefined) || (slice?.stats === null) )
+    if ((slice.stats === undefined) || (slice.stats === null) )
     {
         throw new Error("problem (stats property) with slice");
     }
