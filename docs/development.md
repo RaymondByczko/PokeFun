@@ -2,8 +2,36 @@
 
 ## Purpose
 
-This document will discuss various requirements in the coding
+This document will discuss various aspects in the coding
 challenge.  That file is 'Coding Challenge_Parallel.docx'.
+Challenge fullfillment, Requirements, given endpoints, and
+developed points are covered.
+
+### Challenge Fullfillment
+
+This is a node.js application written with the expressjs
+framework.  Accordingly, challenge fullfillment can
+be met with a) a REST json call b) serving a browser HTML
+page.  (The REST json call can be brought up in a
+browser too, since its a GET HTTP operation.)
+
+The server is hosted in replit.com, and the author
+controls lunarrays.com.  This challenge fullfillment
+is at:
+
+pokedex.lunarrays.com
+
+The required info, 'return all of this info in one object',
+can be observed with the following REST GET call:
+
+pokedex.lunarrays.com/pokemon/transformaveragecombo/1-5
+
+Other ranges can be substituted.  Instead of '1-5', try
+'3-9' for example. Coding defensively, invalid substitutions
+will not work. Things like '5-1', or 'one-five'.
+
+Other pieces of the solution can be observed at other URLs.
+See 'Developed Endpoints' in this markdown file.
 
 ### Given Endpoints
 
@@ -55,6 +83,20 @@ pokemon object.  One or more high level keys are maintained, and the
   
 - pokemon/transform/:pokemonId - after a slice is taken, data within
 is rearranged to meet a certain transform requirement.
+  
+- pokemon/transform/:fromPokemonId-:toPokemonId - a slice is taken
+from each pokemon resource in the range given for their ids. Each slice is
+transformed.  After transformation, each slice is a json object.
+The objects are then stored in an array, alphabetically according
+to the name key of each object stored in the array.
+  
+- /pokemon/averagestat/:fromPokemonId-:toPokemonId - pokemon resources
+from the range indicated are each processed, by slicing and then transformation. The result
+  
+is then processed, for each transformation, noticing each and every stat.  An average
+for each stat is computed.  The end result of this endpoint is an array of
+json object.  Each json object has two keys, name and stat.  Stat is the average value
+for the stat indicated by name.
   
 @TODO replace pokemon with pokefun
 

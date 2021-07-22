@@ -200,8 +200,38 @@ router.get('/pokemon/averagestat/:fromPokemonId(\\d+)-:toPokemonId(\\d+)', async
   }
 });
 
+
+
 router.get('/pokemon/averagestat/:fromPokemonId-:toPokemonId', async (req, res, next)=> {
   console.log('/pokemon/averagestat/m-n (non-int) invoked');
+  try {
+    throw new Error("endpoint /pokemon/averagestat/m-n error: ints not specified");
+  }
+  catch (e) {
+    next(e);
+  }
+});
+
+router.get('/pokemon/transformaveragecombo/:fromPokemonId(\\d+)-:toPokemonId(\\d+)', async (req, res, next)=> {
+  console.log('/pokemon/transformsaveragecombo/m-n (int-int) invoked: OK');
+  try {
+    let m = parseInt(req.params.fromPokemonId);
+    let n = parseInt(req.params.toPokemonId);
+    if (!((m <= n) && (m > 0))) {
+      throw new Error(`problem with m, n: ${m}, ${n}`)
+    }
+
+    let tsliceArray = await fetchpokapi.pokemonSortedTransformed(m, n);
+    let aveStats = await fetchpokapi.pokemonAverageStats(tsliceArray);
+    res.json({"pokemon":tsliceArray, "averages":aveStats});
+  }
+  catch (e) {
+    next(e);
+  }
+});
+
+router.get('/pokemon/transformaveragecombo/:fromPokemonId-:toPokemonId', async (req, res, next)=> {
+  console.log('/pokemon/transformsaveragecombo/m-n (non-int) invoked: NOT OK');
   try {
     throw new Error("endpoint /pokemon/averagestat/m-n error: ints not specified");
   }
