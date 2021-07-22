@@ -27,6 +27,11 @@ router.get('/pokemon1details', function(req, res) {
   res.render('pokemon1details', {});
 });
 
+/*
+ * Endpoint that gets a slice of the Pokemon given by a resource id.
+ * The returned slice is put into the value associated with the
+ * toplevel key, 'slice'.
+ */
 router.get('/pokemon/slice/:pokemonId(\\d+)', async (req, res)=>{
   console.log('/pokemon/slice/n invoked');
   try {
@@ -40,11 +45,20 @@ router.get('/pokemon/slice/:pokemonId(\\d+)', async (req, res)=>{
   }
 });
 
+/*
+ * A fallback endpoint used if the client does not specify an integer.
+ * Note the presence of the regexp \\d+ in the above path.  Notice the
+ * lack of it in this one.
+ */
 router.get('/pokemon/slice/:pokemonId', (req, res)=>{
   console.log('/pokemon/slice/any invoked');
   res.send('alternate for /pokemon/slice/:pokemondId');
 });
 
+/*
+ * The endpoint that first fetches the Pokemon, then takes a slice of it,
+ * and lastly transforms it.
+ */
 router.get('/pokemon/transform/:pokemonId(\\d+)', async (req, res)=>{
   console.log('/pokemon/transform/n invoked');
   try {
@@ -61,8 +75,9 @@ router.get('/pokemon/transform/:pokemonId(\\d+)', async (req, res)=>{
 
 /*
  * An endpoint that transforms pokemon resources with a inclusive range
- * of ids, and puts that into an array.  The result is a new json resource
- * produced by this expressjs server.
+ * of ids, and puts that into an array.  The array is sorted according to
+ * the Pokemon name.  The result is a new json resource produced by this
+ * expressjs server.
  */
 router.get('/pokemon/transform/:fromPokemonId(\\d+)-:toPokemonId(\\d+)', async (req, res, next)=> {
   console.log('/pokemon/transform/m-n invoked');
@@ -70,35 +85,34 @@ router.get('/pokemon/transform/:fromPokemonId(\\d+)-:toPokemonId(\\d+)', async (
     let m = parseInt(req.params.fromPokemonId);
     let n = parseInt(req.params.toPokemonId);
     if ((m <= n) && (m > 0)) {
-      let pokemonIds = [];
-      let tsliceArray = [];
-      let tsliceNameArray = [];
-      for (var i = m; i<=n; i++) {
-        // pokemonIds.push(i);
-        let pj = await fetchpokapi.pokemonJson(i);
-        let slice = await fetchpokapi.pokemonSlice(["name", "stats"], pj);
-        let tslice = fetchpokapi.pokemonTransformedSlice(slice);
-        tsliceNameArray.push(tslice.name);
-        tsliceArray.push(tslice);
+      if (false) {
+        ///// ST
+        let pokemonIds = [];
+        let tsliceArray = [];
+        let tsliceNameArray = [];
+        for (var i = m; i <= n; i++) {
+          // pokemonIds.push(i);
+          let pj = await fetchpokapi.pokemonJson(i);
+          let slice = await fetchpokapi.pokemonSlice(["name", "stats"], pj);
+          let tslice = fetchpokapi.pokemonTransformedSlice(slice);
+          tsliceNameArray.push(tslice.name);
+          tsliceArray.push(tslice);
+        }
+        tsliceArray.sort((a, b) => {
+          let aname = a.name;
+          let bname = b.name;
+          if (aname < bname) {
+            return -1;
+          }
+          if (aname > bname) {
+            return 1;
+          }
+          return 0;
+        });
+        ///// EN
       }
-      tsliceArray.sort((a,b)=>{
-        let aname = a.name;
-        let bname = b.name;
-        if (aname < bname) {
-          return -1;
-        }
-        if (aname > bname) {
-          return 1;
-        }
-        return 0;
-      });
+      let tsliceArray = await fetchpokapi.pokemonSortedTransformed(m, n);
       res.json(tsliceArray);
-      /***
-      pokemonIds.forEach(async (value, index, array)=>
-      {
-        let pj = await fetchpokapi.pokemonJson(value);
-      });
-       ***/
       // res.json({"transformFromTo": {"m": m, "n": n}});
     }
     else {
@@ -134,4 +148,65 @@ router.get('/pokemon/transform/:fromPokemonId-:toPokemonId', async (req, res, ne
   // res.send("alternative to /pokemon/transform/m-n non-int");
 });
 
+/*
+ * This endpoint computes an average for each stat encountered in
+ * 1 or more pokemon resources.  These pokemon resources are identified
+ * by ids in the inclusive range, fromPokemonId and toPokemonId.
+ *
+ * The body returned by this endpoint is json and looks something like:
+ * [
+ *    {
+ *      "name":"hp",
+ *      "stat":58.333333333333336
+ *    },
+ *    {
+ *      "name":"attack",
+ *      "stat":66.66666666666667
+ *    },
+ *    {
+ *      "name":"defense",
+ *      "stat":59.666666666666664
+ *    },
+ *    {
+ *      "name":"special-attack",
+ *      "stat":83
+ *    },
+ *    {
+ *      "name":"special-defense",
+ *      "stat":66.66666666666667
+ *    },
+ *    {
+ *      "name":"speed",
+ *      "stat":81.66666666666667
+ *    }
+ * ]
+ *
+ * (The above is from:http://localhost:3000/pokemon/averagestat/4-6
+ */
+router.get('/pokemon/averagestat/:fromPokemonId(\\d+)-:toPokemonId(\\d+)', async (req, res, next)=> {
+  console.log('/pokemon/averagestat/m-n (non-int) invoked');
+  try {
+    let m = parseInt(req.params.fromPokemonId);
+    let n = parseInt(req.params.toPokemonId);
+    if (!((m <= n) && (m > 0))) {
+      throw new Error(`problem with m, n: ${m}, ${n}`)
+    }
+    let tsliceArray = await fetchpokapi.pokemonSortedTransformed(m, n);
+    let aveStats = await fetchpokapi.pokemonAverageStats(tsliceArray);
+    res.json(aveStats);
+  }
+  catch (e) {
+    next(e);
+  }
+});
+
+router.get('/pokemon/averagestat/:fromPokemonId-:toPokemonId', async (req, res, next)=> {
+  console.log('/pokemon/averagestat/m-n (non-int) invoked');
+  try {
+    throw new Error("endpoint /pokemon/averagestat/m-n error: ints not specified");
+  }
+  catch (e) {
+    next(e);
+  }
+});
 module.exports = router;

@@ -170,6 +170,102 @@ function pokemonTransformedSlice(slice) {
     return transformedSlice;
 }
 
+/*
+ * Gets the Pokemons with ids from m to n inclusive.
+ * Slices each to get the correct top level keys (typically
+ * name and stats).  Each slice is transformed and then
+ * put into an output array sorted based on name.
+ *
+ * This is a higher level function using the ones above.
+ */
+async function pokemonSortedTransformed(m, n) {
+    ///// ST
+    let pokemonIds = [];
+    let tsliceArray = [];
+    let tsliceNameArray = [];
+    for (var i = m; i<=n; i++) {
+        // pokemonIds.push(i);
+        let pj = await pokemonJson(i);
+        let slice = await pokemonSlice(["name", "stats"], pj);
+        let tslice = pokemonTransformedSlice(slice);
+        tsliceNameArray.push(tslice.name);
+        tsliceArray.push(tslice);
+    }
+    tsliceArray.sort((a,b)=>{
+        let aname = a.name;
+        let bname = b.name;
+        if (aname < bname) {
+            return -1;
+        }
+        if (aname > bname) {
+            return 1;
+        }
+        return 0;
+    });
+    ///// EN
+    return tsliceArray;
+}
+
+/*
+ * Takes the output of pokemonSortedTransform and computes the average of
+ * the stats.  A JSON object of this returned to the caller.
+ */
+async function pokemonAverageStats(sortedTransform) {
+    /*
+     * The return value for this function.  It will
+     * be an array of objects.  Each object will have
+     * keys 'name' and 'stat'.  The value associated with
+     * 'name' is the name of the stat.  The value associated
+     * with 'stat' is the average for that stat.
+     */
+    let averageStatsArray = [];
+    /*
+     * A temporary object that holds each stat name, and the
+     * numerical stats for that name.  These numerical stats
+     * are held in an array.
+     * {
+     *      "hp":{
+     *              "stats":[10, 20]
+     *      },
+     *      "speed":{
+     *              "stats":[11, 22, 33]
+     *      }
+     * }
+     */
+    let statsObject = {};
+    sortedTransform.forEach((val, ind, arr)=>{
+        let statsArray = val.stats;
+        statsArray.forEach((val, ind, arr)=>{
+            let vname = val.name;
+            let vstat = val.stat;
+            // if (!statsArray.includes(vname)){
+            //     statsArray.push(vname);
+            // }
+            if (statsObject[vname] === undefined) {
+                statsObject[vname] = {"stats":[]};
+                statsObject[vname].stats.push(vstat);
+            }
+            else {
+                statsObject[vname].stats.push(vstat);
+            }
+        });
+    })
+    for (const property in statsObject) {
+        let numStats = statsObject[property].stats.length;
+        let sumStats = statsObject[property].stats.reduce((acc, cur, ind, array)=>{
+            return acc + cur;
+        }, 0);
+        let aveStats = sumStats/numStats;
+        let statObject = {
+            "name":property,
+            "stat":aveStats
+        }
+        averageStatsArray.push(statObject);
+    }
+    return averageStatsArray;
+
+}
+
 async function alertFetchResponse(responseOriginal, firstAlert="",numberHeaders=5) {
 
     let response = responseOriginal.clone();

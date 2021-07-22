@@ -8,5 +8,7 @@ module.exports.pokemon = pokemon;
 module.exports.pokemonJson = pokemonJson;
 module.exports.pokemonSlice = pokemonSlice;
 module.exports.pokemonTransformedSlice = pokemonTransformedSlice;
+module.exports.pokemonSortedTransformed = pokemonSortedTransformed;
+module.exports.pokemonAverageStats = pokemonAverageStats;
 module.exports.alertFetchResponse = alertFetchResponse;
 module.exports.propertiesOf = propertiesOf;
