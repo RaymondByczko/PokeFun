@@ -16,15 +16,20 @@ page.  (The REST json call can be brought up in a
 browser too, since its a GET HTTP operation.)
 
 The server is hosted in replit.com, and the author
-controls lunarrays.com.  This challenge fullfillment
+controls sherbetray.com.  This challenge fullfillment
 is at:
 
-pokedex.lunarrays.com
+https://pokedex.sherbetray.com
+
+(This was done by adding a CNAME record.)
+
+github repo: https://github.com/RaymondByczko/PokeFun
+replit.com: https://replit.com/@rbyczko/PokeFun
 
 The required info, 'return all of this info in one object',
 can be observed with the following REST GET call:
 
-pokedex.lunarrays.com/pokemon/transformaveragecombo/1-5
+https://pokedex.sherbetray.com/pokemon/transformaveragecombo/1-5
 
 Other ranges can be substituted.  Instead of '1-5', try
 '3-9' for example. Coding defensively, invalid substitutions

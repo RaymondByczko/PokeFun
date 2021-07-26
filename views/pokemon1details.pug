@@ -6,6 +6,11 @@ html
         title= title
         link(href='/stylesheets/style.css' rel='stylesheet'
             type='text/css')
+        script().
+            function download_in_head() {
+                alert("download_in_head");
+            }
+
     body(class='flex-container')
         DIV(class='dbstatus-parent')
             DIV(class='dbstatus-success') Database Status
@@ -21,8 +26,59 @@ html
             button(id='id_fetch_pokemon1') Fetch pokemon1
             pre()
                 textarea(id="id_results")
+                br()
+                button(type="button" onclick="download_results2()") Save2
+                button(type="button" onclick="download_results3('#id_results', 'results.txt')") Save3
+                script().
+                    function download_results2() {
+                        console.log("download_results2: start");
+                        let text = document.querySelector("#id_results").value;
+                        text = text.replace(/\n/g, "\r\n"); // To retain the Line breaks.
+                        let blob = new Blob([text], {type: "text/plain"});
+                        let anchor = document.createElement("a");
+                        anchor.download = "results.txt";
+                        anchor.href = window.URL.createObjectURL(blob);
+                        anchor.target = "_blank";
+                        anchor.style.display = "none"; // just to be safe!
+                        document.querySelector("#id_results").parentNode.insertBefore(anchor, document.querySelector("#id_results").nextSibling);
+                        // document.body.appendChild(anchor);
+                        anchor.click();
+                        document.body.removeChild(anchor);
+                    }
+                    function download_results3(sId, dFi) {
+                        console.log("download_results3: start");
+                        download_helper(sId, dFi)
+                    }
+                    function download_helper(sourceId, downloadFile) {
+                        let text = document.querySelector(sourceId).value;
+                        text = text.replace(/\n/g, "\r\n"); // To retain the Line breaks.
+                        let blob = new Blob([text], {type: "text/plain"});
+                        let anchor = document.createElement("a");
+                        anchor.download = downloadFile;
+                        anchor.href = window.URL.createObjectURL(blob);
+                        anchor.target = "_blank";
+                        anchor.style.display = "none"; // just to be safe!
+                        document.querySelector(sourceId).parentNode.insertBefore(anchor, document.querySelector("#id_results").nextSibling);
+                        // document.body.appendChild(anchor);
+                        anchor.click();
+                        document.body.removeChild(anchor);
+                    }
             pre()
                 textarea(id="id_poke_prop")
+                br()
+                button(type="button" onclick="download_poke_prop()") Save
+                script().
+                    function download_poke_prop() {
+                        alert("download_poke_prop: start");
+                    }
+            pre()
+                textarea(id="id_headers")
+                br()
+                button(type="button" onclick="download_headers()") Save
+                script().
+                    function download_headers() {
+                        alert("download_headers: start");
+                    }
             script(type="module").
                 let modulep = await import('/fetchpokapi_ecmascriptmodule.js');
                 async function onInputClick(e) {
@@ -34,6 +90,12 @@ html
                     alert("Before response_pokemon1.json()");
                     let rpokemon1 = await response_pokemon1.json();
                     alert("rpokemon1="+rpokemon1);
+                    alert("headers="+response_pokemon1.headers);
+                    let allHeaders = "";
+                    for (const h of response_pokemon1.headers) {
+                        allHeaders = allHeaders + h + "::::" + "&#13;&#10;";
+                    }
+                    alert("allHeaders="+allHeaders);
                     // alert("JSON.stringify(rpokemon1)="+JSON.stringify(rpokemon1));
                     document.querySelector('#id_results').innerHTML = JSON.stringify(rpokemon1, undefined, 8);
                     /* innerText does not work; use innerHTML */
@@ -43,6 +105,21 @@ html
                     };
                     let propHTML = pPokemon1.reduce(reducer,'');
                     document.querySelector('#id_poke_prop').innerHTML = propHTML;
+                    document.querySelector('#id_headers').innerHTML = allHeaders;
                     alert("onInputClick:end");
+                }
+                function download_results(){
+                    let text = document.querySelector("#id_results").value;
+                    text = text.replace(/\n/g, "\r\n"); // To retain the Line breaks.
+                    let blob = new Blob([text], { type: "text/plain"});
+                    let anchor = document.createElement("a");
+                    anchor.download = "results.txt";
+                    anchor.href = window.URL.createObjectURL(blob);
+                    anchor.target ="_blank";
+                    anchor.style.display = "none"; // just to be safe!
+                    document.querySelector("#id_results").parentNode.insertBefore(anchor, document.querySelector("#id_results").nextSibling);
+                    // document.body.appendChild(anchor);
+                    anchor.click();
+                    document.body.removeChild(anchor);
                 }
                 document.querySelector('#id_fetch_pokemon1').addEventListener('click', onInputClick);
