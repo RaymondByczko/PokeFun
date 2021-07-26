@@ -22,7 +22,7 @@ html
             pre()
                 textarea(id="id_results")
                 br()
-                button(type="button" onclick="download_results('#id_results', 'results.txt')") Save Results
+                button(type="button" disabled class="save_button" onclick="download_results('#id_results', 'results.txt')") Save Results
                 script().
                     function download_results(sId, dFi) {
                         console.log("download_results: start");
@@ -44,7 +44,7 @@ html
             pre()
                 textarea(id="id_poke_prop")
                 br()
-                button(type="button" onclick="download_poke_prop('#id_poke_prop', 'poke_prop.txt')") Save Properties
+                button(type="button" disabled class="save_button" onclick="download_poke_prop('#id_poke_prop', 'poke_prop.txt')") Save Properties
                 script().
                     function download_poke_prop(sId, dFi) {
                         alert("download_poke_prop: start");
@@ -53,7 +53,7 @@ html
             pre()
                 textarea(id="id_headers")
                 br()
-                button(type="button" onclick="download_headers('#id_headers', 'headers.txt')") Save Headers
+                button(type="button" disabled class="save_button" onclick="download_headers('#id_headers', 'headers.txt')") Save Headers
                 script().
                     function download_headers(sId, dFi) {
                         alert("download_headers: start");
@@ -86,6 +86,12 @@ html
                     let propHTML = pPokemon1.reduce(reducer,'');
                     document.querySelector('#id_poke_prop').innerHTML = propHTML;
                     document.querySelector('#id_headers').innerHTML = allHeaders;
+
+                    // Enable all save buttons
+                    // document.querySelectorAll('.save_button').disabled = false;
+                    document.querySelectorAll('.save_button').forEach((val, key)=>{
+                        val.disabled = false;
+                    });
                     alert("onInputClick:end");
                 }
                 document.querySelector('#id_fetch_pokemon1').addEventListener('click', onInputClick);
