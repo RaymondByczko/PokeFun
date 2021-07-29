@@ -11,10 +11,10 @@ fetchpokapi.setFetch(nodefetch);
 // router.use(express.static("stylesheets"));
 
 router.use(bodyParser.json({type:"application/json"}));
-
+let pokemonApp = new fetchpokapi.ApplicationDetails();
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: fetchpokapi.ApplicationDetails.title /*'Pokemon API Application'*/, about: fetchpokapi.ApplicationDetails.about , endpoints: pokemonApp.endpoints, endpointExamples: pokemonApp.endpointsExample});
 });
 
 /* Trial pokemon page */
@@ -32,6 +32,8 @@ router.get('/pokemon1details', function(req, res) {
  * The returned slice is put into the value associated with the
  * toplevel key, 'slice'.
  */
+let indexEndpoint = pokemonApp.addEndpoint('/pokemon/slice/:pokemonId(\\d+)');
+pokemonApp.addEndpointExample(indexEndpoint, '/pokemon/slice/1');
 router.get('/pokemon/slice/:pokemonId(\\d+)', async (req, res)=>{
   console.log('/pokemon/slice/n invoked');
   try {
@@ -59,6 +61,8 @@ router.get('/pokemon/slice/:pokemonId', (req, res)=>{
  * The endpoint that first fetches the Pokemon, then takes a slice of it,
  * and lastly transforms it.
  */
+indexEndpoint = pokemonApp.addEndpoint('/pokemon/transform/:pokemonId(\\d+)');
+pokemonApp.addEndpointExample(indexEndpoint, '/pokemon/transform/1');
 router.get('/pokemon/transform/:pokemonId(\\d+)', async (req, res)=>{
   console.log('/pokemon/transform/n invoked');
   try {
@@ -79,6 +83,7 @@ router.get('/pokemon/transform/:pokemonId(\\d+)', async (req, res)=>{
  * the Pokemon name.  The result is a new json resource produced by this
  * expressjs server.
  */
+pokemonApp.addEndpoint('/pokemon/transform/:fromPokemonId(\\d+)-:toPokemonId(\\d+)');
 router.get('/pokemon/transform/:fromPokemonId(\\d+)-:toPokemonId(\\d+)', async (req, res, next)=> {
   console.log('/pokemon/transform/m-n invoked');
   try {
@@ -183,6 +188,7 @@ router.get('/pokemon/transform/:fromPokemonId-:toPokemonId', async (req, res, ne
  *
  * (The above is from:http://localhost:3000/pokemon/averagestat/4-6
  */
+pokemonApp.addEndpoint('/pokemon/averagestat/:fromPokemonId(\\d+)-:toPokemonId(\\d+)');
 router.get('/pokemon/averagestat/:fromPokemonId(\\d+)-:toPokemonId(\\d+)', async (req, res, next)=> {
   console.log('/pokemon/averagestat/m-n (non-int) invoked');
   try {
@@ -212,6 +218,7 @@ router.get('/pokemon/averagestat/:fromPokemonId-:toPokemonId', async (req, res, 
   }
 });
 
+pokemonApp.addEndpoint('/pokemon/transformaveragecombo/:fromPokemonId(\\d+)-:toPokemonId(\\d+)');
 router.get('/pokemon/transformaveragecombo/:fromPokemonId(\\d+)-:toPokemonId(\\d+)', async (req, res, next)=> {
   console.log('/pokemon/transformsaveragecombo/m-n (int-int) invoked: OK');
   try {

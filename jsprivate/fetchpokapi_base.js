@@ -7,6 +7,49 @@
  * needs to be in the browser, in web pages.
  */
 
+/**
+ * A class that manages various application details, specifically title, about info,
+ * endpoints and examples of such, among other things.  Info from this class or
+ * objects of it is helpful to pug.
+ */
+class ApplicationDetails {
+    constructor() {
+        this._endpoints = [];
+        this._endpointsExample = [];
+    }
+    static title="Pokemon API Tester";
+    static about=
+        "This website accesses the Pokemon REST website, and " +
+        "provides endpoints of its own. The end points provided " +
+        "make various calls to the Pokemon REST website, and then " +
+        "slice and transform it into a derived resource.  Further to "+
+        "providing endpoints, this website also has links to " +
+        "webpages.  Each group is noted - that is, endpoints and webpages.";
+
+    /**
+     *
+     * @param endpoint The endpoint with variable parts expressed with regexp notation.
+     * @returns {number} The index position to which the endpoint was added to. Useful for addEndpointExample.
+     */
+    addEndpoint(endpoint) {
+        let len = this._endpoints.push(endpoint);
+        return len-1;
+    }
+    get endpoints() {
+        return this._endpoints;
+    }
+
+    /**
+     * @param indexEndpoint  The return from a previously called addEndpoint.
+     * @param example The URL segment that should work to demo this.
+     */
+    addEndpointExample(indexEndpoint, example) {
+        this._endpointsExample[indexEndpoint] = example;
+    }
+    get endpointsExample() {
+        return this._endpointsExample;
+    }
+}
 /*
  * setFetch and fetchFunction allow the particular
  * fetch function to be assigned, and utilized, per

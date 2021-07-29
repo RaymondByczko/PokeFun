@@ -11,3 +11,21 @@ a {
   height: 5em;
   width: 10em;
 }
+
+.class_about {
+  border: 3px solid black;
+  border-radius: 1em;
+  width: 66.67%;
+  padding: 1em;
+}
+
+.class_endpoints {
+  border: 3px solid green;
+  border-radius: 1em;
+  width: 66.67%;
+  padding: 1em;
+}
+
+.button_fetch {
+  background-color: green;
+}

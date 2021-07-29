@@ -3,6 +3,7 @@
 // to produce a commonjs compliant module.  Node modules and
 // programs will need these to incorporate these javascript function.
 module.exports.setFetch = setFetch;
+module.exports.ApplicationDetails = ApplicationDetails;
 module.exports.pokemon1 = pokemon1;
 module.exports.pokemon = pokemon;
 module.exports.pokemonJson = pokemonJson;
