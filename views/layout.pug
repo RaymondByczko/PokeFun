@@ -3,5 +3,11 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+    script().
+      function onbuttonfetch(fetchURL) {
+        alert("onbuttonfetch: start");
+        alert(`... ${fetchURL}`);
+        window.open(fetchURL)
+      }
   body
     block content

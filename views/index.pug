@@ -7,6 +7,12 @@ block content
   p(class="class_endpoints") #{endpoints}
   div(class="class_endpoints")
     -   for (var i = 0; i < endpoints.length; i++)
+          - let item = endpoints[i];
+          - let oc = "onbuttonfetch(" + "'foopath'" + ")"
           div
+            - let oc2 = "onbuttonfetch('" + item + "')"
+            - let oc3 = "onbuttonfetch('" + endpointExamples[i] + "')"
+            li= item
             li= endpoints[i]
-            button(class="button_fetch") Fetch
+            li= endpointExamples[i]
+            button(class="button_fetch" onclick=oc3) Fetch

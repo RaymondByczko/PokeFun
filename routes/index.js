@@ -83,7 +83,8 @@ router.get('/pokemon/transform/:pokemonId(\\d+)', async (req, res)=>{
  * the Pokemon name.  The result is a new json resource produced by this
  * expressjs server.
  */
-pokemonApp.addEndpoint('/pokemon/transform/:fromPokemonId(\\d+)-:toPokemonId(\\d+)');
+indexEndpoint = pokemonApp.addEndpoint('/pokemon/transform/:fromPokemonId(\\d+)-:toPokemonId(\\d+)');
+pokemonApp.addEndpointExample(indexEndpoint, '/pokemon/transform/1-2');
 router.get('/pokemon/transform/:fromPokemonId(\\d+)-:toPokemonId(\\d+)', async (req, res, next)=> {
   console.log('/pokemon/transform/m-n invoked');
   try {
@@ -188,7 +189,8 @@ router.get('/pokemon/transform/:fromPokemonId-:toPokemonId', async (req, res, ne
  *
  * (The above is from:http://localhost:3000/pokemon/averagestat/4-6
  */
-pokemonApp.addEndpoint('/pokemon/averagestat/:fromPokemonId(\\d+)-:toPokemonId(\\d+)');
+indexEndpoint = pokemonApp.addEndpoint('/pokemon/averagestat/:fromPokemonId(\\d+)-:toPokemonId(\\d+)');
+pokemonApp.addEndpointExample(indexEndpoint,'/pokemon/averagestat/1-3');
 router.get('/pokemon/averagestat/:fromPokemonId(\\d+)-:toPokemonId(\\d+)', async (req, res, next)=> {
   console.log('/pokemon/averagestat/m-n (non-int) invoked');
   try {
@@ -218,7 +220,8 @@ router.get('/pokemon/averagestat/:fromPokemonId-:toPokemonId', async (req, res, 
   }
 });
 
-pokemonApp.addEndpoint('/pokemon/transformaveragecombo/:fromPokemonId(\\d+)-:toPokemonId(\\d+)');
+indexEndpoint = pokemonApp.addEndpoint('/pokemon/transformaveragecombo/:fromPokemonId(\\d+)-:toPokemonId(\\d+)');
+pokemonApp.addEndpointExample(indexEndpoint,'/pokemon/transformaveragecombo/1-3');
 router.get('/pokemon/transformaveragecombo/:fromPokemonId(\\d+)-:toPokemonId(\\d+)', async (req, res, next)=> {
   console.log('/pokemon/transformsaveragecombo/m-n (int-int) invoked: OK');
   try {
